@@ -2,29 +2,26 @@ import { useState } from "react";
 import Navbar from "./Shared/Navbar.jsx";
 import { Label } from "./ui/label.jsx";
 import { Input } from "./ui/input.jsx";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group.jsx";
 import { Button } from "./ui/button.jsx";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "./ui/select.jsx";
 
 function ProfileUpdate() {
   const [input, setInput] = useState({
     fullname: "",
-    email: "",
     phoneNumber: "",
+    passingyear: "",
+    companies: "",
+    industry: "",
     branch: "",
-    year: "",
     domain: "",
-    role: "",
     file: "",
   });
   const loading = false;
@@ -38,7 +35,7 @@ function ProfileUpdate() {
     setInput({ ...input, file: e.target.files?.[0] });
   };
 
-  const submitHandler = async (e) => {
+  const submitHandler = (e) => {
     e.preventDefault();
     navigate("/student/home");
   };
@@ -51,59 +48,63 @@ function ProfileUpdate() {
           <div className="text-left">
             <h1 className="font-bold text-xl mb-1">
               Complete Your <span className="text-purple-950">Profile</span> for
-              a Better Experience !
+              a Better Experience!
             </h1>
-            <p className="text-sm mt-2  text-gray-500">
+            <p className="text-sm mt-2 text-gray-500">
               Please fill out this form to update your profile and ensure your
               information is accurate.
             </p>
           </div>
           <form onSubmit={submitHandler} className="space-y-4 mt-4">
             <div>
-              <Label>Full Name</Label>
+              <Label>Passing Year</Label>
+              <Input
+                type="number"
+                placeholder="Enter Year of Passing"
+                name="passingyear"
+                value={input.passingyear}
+                onChange={changeEventHandler}
+                className="w-full"
+                min="2000"
+                max="2100"
+                required
+              />
+            </div>
+            <div>
+              <Label>Preferred Companies</Label>
               <Input
                 type="text"
-                name="fullname"
-                value={input.fullname}
+                name="companies"
+                value={input.companies}
                 onChange={changeEventHandler}
-                placeholder="Enter Full Name"
+                placeholder="Enter Companies Name"
                 className="w-full"
                 required
               />
             </div>
             <div>
-              <Label>Phone Number</Label>
+              <Label>Industry</Label>
               <Input
                 type="text"
-                placeholder="Enter Valid Number"
-                name="phoneNumber"
-                value={input.phoneNumber}
+                name="industry"
+                value={input.industry}
                 onChange={changeEventHandler}
+                placeholder="Enter Industry"
                 className="w-full"
-                pattern="[0-9]{10}"
-                title="Phone number must be 10 digits"
                 required
               />
             </div>
             <div>
-              <Label>Pursuing Year</Label>
-              <Select
-                onValueChange={(value) => setInput({ ...input, year: value })}
-                required
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Year" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="fe">FE</SelectItem>
-                  <SelectItem value="se">SE</SelectItem>
-                  <SelectItem value="te">TE</SelectItem>
-                  <SelectItem value="be">BE</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>Degree</Label>
+              <Input
+                type="text"
+                value="B.E"
+                readOnly
+                className="w-full bg-gray-100 cursor-not-allowed"
+              />
             </div>
             <div>
-              <Label>Branch</Label>
+              <Label>Department</Label>
               <Select
                 onValueChange={(value) => setInput({ ...input, branch: value })}
                 required
@@ -153,15 +154,16 @@ function ProfileUpdate() {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            {/* <div>
               <Label>Profile Picture</Label>
               <Input
                 accept="image/*"
                 type="file"
                 className="cursor-pointer w-full"
                 onChange={changeFileHandeler}
+                required
               />
-            </div>
+            </div> */}
             {loading ? (
               <Button className="w-full my-2">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating
@@ -169,8 +171,7 @@ function ProfileUpdate() {
               </Button>
             ) : (
               <Button type="submit" className="w-full my-2">
-                {" "}
-                Update Profile{" "}
+                Update Profile
               </Button>
             )}
           </form>

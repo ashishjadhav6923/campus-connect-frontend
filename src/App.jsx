@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./components/Authentication/Login.jsx";
-import ProfileUpdate from "./components/ProfileUpdate.jsx";
+import ProfileUpdate from "./components/StudentProfileUpdate.jsx";
 import Home from "./components/Pages/Home.jsx";
 import Profile from "./components/Pages/Profile.jsx";
 import ViewAlumniProfile from "./components/ViewAlumniProfile.jsx";
@@ -13,7 +13,7 @@ import UpdateProfileDialog from "./components/UpdateProfileDialog.jsx";
 
 const appRouter = createBrowserRouter([
   {
-    path: "/login",
+    path: "/",
     element: <Login />,
   },
   {
@@ -21,15 +21,19 @@ const appRouter = createBrowserRouter([
     element: <Home />,
   },
   {
+    path: "/student/profileUpdate",
+    element: <ProfileUpdate />,
+  },
+  {
+    path: "/alumni/profileUpdate",
+    element: "/alumni/profileUpdate",
+  },
+  {
     path: "/student/connections",
     element: <Connections />,
   },
   {
-    path: "/profileupdate",
-    element: <ProfileUpdate />,
-  },
-  {
-    path: "/viewAlumniProfile/:id",
+    path: "/viewProfile/:id",
     element: <ViewAlumniProfile />,
   },
   {
@@ -37,15 +41,15 @@ const appRouter = createBrowserRouter([
     element: <Profile />,
   },
   {
-    path: "/admin",
+    path: "/admin/home",
     element: <Admin />,
   },
   {
-    path: "/create-student",
+    path: "/admin/create-student",
     element: <CreateStudent />,
   },
   {
-    path: "/delete-student",
+    path: "/admin/delete-student",
     element: <DeleteStudent />,
   },
 ]);

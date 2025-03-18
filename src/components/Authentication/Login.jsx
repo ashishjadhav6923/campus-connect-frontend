@@ -6,6 +6,7 @@ import { Button } from "../ui/button.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import axios from "axios";
 
 function Login() {
   const [input, setInput] = useState({
@@ -25,24 +26,54 @@ function Login() {
     e.preventDefault();
 
     // Check if all fields are filled
-    if (!input.email || !input.password || !input.role) {
+    if (!input.email || !input.password) {
       toast.error("All fields are required!");
       return;
     }
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_PATH}/api/auth/login`,
+        {
+          email: input.email,
+          password: input.password,
+        }
+        // {
+        //   withCredentials: true,
+        // }
+      );
+      console.log(response.data);
 
-    // Check if user is logging in for the first time
-    const isNewUser = localStorage.getItem("isNewUser");
+      if (response.status === 200) {
+        const { isVerified, role } = response.data.data.user;
 
-    if (!isNewUser) {
-      // First-time login, navigate to Profile Update
-      localStorage.setItem("isNewUser", "false"); // Set flag
-      navigate("/profileUpdate");
-    } else {
-      // Existing user, navigate to Home page
-      navigate("/student/home");
+        if (role === "admin") {
+          navigate("/admin/home");
+        } else if (isVerified) {
+          navigate(`/${role}/home`);
+        } else {
+          navigate(`/${role}/profileUpdate`);
+        }
+      } else {
+        toast.error("Something Went wrong !");
+      }
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "Something went wrong!");
     }
 
-    toast.success("Logged in successfully!");
+    // Check if user is logging in for the first time
+    // const isNewUser = localStorage.getItem("isNewUser");
+
+    // if (!isNewUser) {
+    //   // First-time login, navigate to Profile Update
+    //   localStorage.setItem("isNewUser", "false"); // Set flag
+    //   // navigate("/profileUpdate");
+    // } else {
+    //   // Existing user, navigate to Home page
+    //   navigate("/student/home");
+    // }
+
+    // toast.success("Logged in successfully!");
   };
 
   return (
@@ -85,7 +116,7 @@ function Login() {
             />
           </div>
 
-          <div className="my-5">
+          {/* <div className="my-5">
             <RadioGroup className="flex flex-wrap gap-3">
               <div className="flex items-center space-x-2">
                 <Input
@@ -124,7 +155,7 @@ function Login() {
                 <Label>Admin</Label>
               </div>
             </RadioGroup>
-          </div>
+          </div> */}
 
           {loading ? (
             <Button className="w-full my-2">
