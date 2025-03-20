@@ -10,6 +10,8 @@ import Admin from "./components/Admin/Admin.jsx";
 import CreateStudent from "./components/Admin/CreateStudent.jsx";
 import DeleteStudent from "./components/Admin/DeleteStudent.jsx";
 import UpdateProfileDialog from "./components/UpdateProfileDialog.jsx";
+import ChatApp from "./components/ChatApp.jsx";
+import AlumniProfileUpdate from "./components/Alumni/AlumniProfileUpdate.jsx";
 
 const appRouter = createBrowserRouter([
   {
@@ -25,12 +27,12 @@ const appRouter = createBrowserRouter([
     element: <ProfileUpdate />,
   },
   {
-    path: "/alumni/profileUpdate",
-    element: "/alumni/profileUpdate",
+    path: "/student/connections",
+    element: <ChatApp />,
   },
   {
-    path: "/student/connections",
-    element: <Connections />,
+    path: "/chat",
+    element: <ChatApp />, // Handles chat via query parameters
   },
   {
     path: "/viewProfile/:id",
@@ -40,6 +42,11 @@ const appRouter = createBrowserRouter([
     path: "/student/UpdateProfileDialog",
     element: <Profile />,
   },
+  {
+    path: "/alumni/profileUpdate",
+    element: <AlumniProfileUpdate />,
+  },
+
   {
     path: "/admin/home",
     element: <Admin />,
@@ -57,11 +64,9 @@ const appRouter = createBrowserRouter([
 function App() {
   return (
     <div className="flex flex-col min-h-screen bg-[#FBFBFB]">
-      {/* Main content takes up the available space */}
       <div className="flex-grow">
         <RouterProvider router={appRouter} />
       </div>
-      {/* Footer stays at the bottom */}
       <Footer />
     </div>
   );

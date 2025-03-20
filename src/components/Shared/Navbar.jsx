@@ -38,7 +38,7 @@ function Navbar() {
               <Link to="/student/home">Home</Link>
             </li>
             <li className="transition-all duration-200 transform hover:scale-110 hover:text-purple-700 hover:font-semibold">
-              <Link to="/connections">Connections</Link>
+              <Link to="/student/connections">Connections</Link>
             </li>
             <li className="transition-all duration-200 transform hover:scale-110 hover:text-purple-700 hover:font-semibold">
               <Link to="/student/UpdateProfileDialog">Profile</Link>
