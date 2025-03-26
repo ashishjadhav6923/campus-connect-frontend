@@ -5,7 +5,8 @@ import { Button } from "../ui/button.jsx";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group.jsx";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import Navbar from "../Shared/Navbar.jsx";
 function DeleteStudent() {
   const navigate = useNavigate();
   const [input, setInput] = useState({
@@ -18,91 +19,102 @@ function DeleteStudent() {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Check if any field is empty
-    if (!input.name || !input.email || !input.role) {
-      toast.error("All fields are required!");
-      return;
+  const validateInputs = () => {
+    if (!input.email || !input.role) {
+      toast.error("Email and Role are required!");
+      return false;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+      toast.error("Enter a valid email address!");
+      return false;
+    }
+    return true;
+  };
 
-    // Proceed with form submission (e.g., API call)
-    console.log(input);
-    toast.success("Student account deleted successfully!");
-    navigate("/admin/home");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateInputs()) return;
 
-    // Reset form after submission
-    setInput({
-      name: "",
-      email: "",
-      role: "student",
-    });
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_PATH}/api/admin/deleteUser`,
+        input
+      );
+
+      if (response.status === 200) {
+        toast.success("Student account deleted successfully!");
+        navigate("/admin/home");
+        setInput({ name: "", email: "", role: "student" });
+      } else {
+        toast.error("Something went wrong!");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete account!");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-md w-full bg-white shadow-md rounded p-6">
-        <h1 className="text-2xl font-bold mb-4">
-          Delete <span className="text-purple-700">Student</span> Account 🎓
-        </h1>
-        <p className="text-sm text-gray-500 mb-6">
-          Provide the details below to delete a student account.
-        </p>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <Label>Name</Label>
-            <Input
-              type="text"
-              name="name"
-              value={input.name}
-              onChange={handleChange}
-              placeholder="Enter full name"
-              className="w-full"
-            />
-          </div>
-          <div className="mb-4">
-            <Label>Email</Label>
-            <Input
-              type="email"
-              name="email"
-              value={input.email}
-              onChange={handleChange}
-              placeholder="Enter email"
-              className="w-full"
-            />
-          </div>
-          <div className="mb-6">
-            <Label>Role</Label>
-            <RadioGroup
-              value={input.role}
-              onValueChange={(value) => setInput({ ...input, role: value })}
-              className="flex gap-4 mt-2"
+    <>
+      <Navbar />
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="max-w-md w-full bg-white shadow-md rounded p-6">
+          <h1 className="text-2xl font-bold mb-4">
+            Delete <span className="text-purple-900">Student</span> Account 🎓
+          </h1>
+          <p className="text-sm text-gray-500 mb-6">
+            Provide the details below to delete a student account.
+          </p>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <Label>Name (Optional)</Label>
+              <Input
+                type="text"
+                name="name"
+                value={input.name}
+                onChange={handleChange}
+                placeholder="Enter full name (if known)"
+                className="w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <Label>Email</Label>
+              <Input
+                type="email"
+                name="email"
+                value={input.email}
+                onChange={handleChange}
+                placeholder="Enter email"
+                className="w-full"
+                required
+              />
+            </div>
+            <div className="mb-6">
+              <Label>Role</Label>
+              <RadioGroup
+                value={input.role}
+                onValueChange={(value) => setInput({ ...input, role: value })}
+                className="flex gap-4 mt-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem id="student" value="student" />
+                  <Label htmlFor="student">Student</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem id="alumni" value="alumni" />
+                  <Label htmlFor="alumni">Alumni</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-red-600 hover:bg-red-700"
             >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  id="student"
-                  value="student"
-                  className="cursor-pointer"
-                />
-                <Label htmlFor="student">Student</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  id="alumni"
-                  value="alumni"
-                  className="cursor-pointer"
-                />
-                <Label htmlFor="alumni">Alumni</Label>
-              </div>
-            </RadioGroup>
-          </div>
-          <Button type="submit" className="w-full">
-            Delete Account
-          </Button>
-        </form>
+              Delete Account
+            </Button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

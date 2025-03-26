@@ -5,7 +5,7 @@ import { Button } from "../ui/button.jsx";
 import { LogOutIcon, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const user = true;
+const user = { role: "admin" }; // Change role to "student" or "alumni" to test
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,17 +33,21 @@ function Navbar() {
               : "hidden"
           } md:flex-row md:items-center`}
         >
-          <ul className="flex flex-col md:flex-row font-medium items-end md:items-center gap-5">
-            <li className="transition-all duration-200 transform hover:scale-110 hover:text-purple-700 hover:font-semibold">
-              <Link to="/student/home">Home</Link>
-            </li>
-            <li className="transition-all duration-200 transform hover:scale-110 hover:text-purple-700 hover:font-semibold">
-              <Link to="/student/connections">Connections</Link>
-            </li>
-            <li className="transition-all duration-200 transform hover:scale-110 hover:text-purple-700 hover:font-semibold">
-              <Link to="/student/UpdateProfileDialog">Profile</Link>
-            </li>
-          </ul>
+          {user.role !== "admin" && (
+            <ul className="flex flex-col md:flex-row font-medium items-end md:items-center gap-5">
+              <li className="transition-all duration-200 transform hover:scale-110 hover:text-purple-700 hover:font-semibold">
+                <Link to="/student/home">Home</Link>
+              </li>
+              {user.role === "student" && (
+                <li className="transition-all duration-200 transform hover:scale-110 hover:text-purple-700 hover:font-semibold">
+                  <Link to="/student/connections">Connections</Link>
+                </li>
+              )}
+              <li className="transition-all duration-200 transform hover:scale-110 hover:text-purple-700 hover:font-semibold">
+                <Link to="/student/UpdateProfileDialog">Profile</Link>
+              </li>
+            </ul>
+          )}
           <Popover>
             <PopoverTrigger>
               <Avatar className="cursor-pointer w-10 h-10 hover:scale-110 transition-all duration-200">
@@ -59,14 +63,12 @@ function Navbar() {
                 </Avatar>
                 <div>
                   <h4>Viraj Dagade</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Full Stack Developer
-                  </p>
+                  <p className="text-sm text-muted-foreground">Student</p>
                 </div>
               </div>
               <div className="flex pl-12 flex-col text-gray-600">
                 <div className="flex w-fit items-center gap-2 cursor-pointer">
-                  <Link to="/login">
+                  <Link to="/">
                     <Button
                       className="hover:text-purple-900 hover:font-semibold transition-all"
                       variant="link"
